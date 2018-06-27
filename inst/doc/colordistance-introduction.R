@@ -87,7 +87,7 @@ colordistance::heatmapColorDistance(CDM)
 #  write.csv(CDM, file = "Heliconius_color_distance_matrix.csv")
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  colordistance::exportTree(CDM, file = "Heliconius_color_tree.newick", returnTree = F)
+#  colordistance::exportTree(CDM, file = "Heliconius_color_tree.newick", return.tree = F)
 
 ## ---- fig.align="center", fig.width=8, fig.height=5, eval=FALSE----------
 #  # Define upper and lower bounds for background pixels
@@ -109,14 +109,14 @@ colordistance::heatmapColorDistance(CDM)
 ## ---- fig.align="center", fig.width=7, fig.height=5, results=F-----------
 # Default: histogram binning, EMD color distance metric, 3 bins per channel (27 total)
 # Note that we get slightly different clustering each time
-default <- colordistance::imageClusterPipeline(images, upper=upper, lower=lower)
+default <- colordistance::imageClusterPipeline(images, upper = upper, lower = lower)
 
 # Using k-means instead of histogram
-kmeansBinning <- colordistance::imageClusterPipeline(images, clusterMethod="kmeans", upper=upper, lower=lower)
+kmeansBinning <- colordistance::imageClusterPipeline(images, cluster.method = "kmeans", upper = upper, lower = lower)
 
 # Using chisq instead of emd
-chisq <- colordistance::imageClusterPipeline(images, distanceMethod = "chisq", upper=upper, lower=lower)
+chisq <- colordistance::imageClusterPipeline(images, distance.method = "chisq", upper = upper, lower = lower)
 
 # Using HSV instead of RGB
-hsvPix <- colordistance::imageClusterPipeline(images, hsv=T, upper=upper, lower=lower)
+hsvPix <- colordistance::imageClusterPipeline(images, color.space = "hsv", upper = upper, lower = lower)
 

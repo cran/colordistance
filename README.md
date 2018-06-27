@@ -1,6 +1,16 @@
-# colordistance 0.8.0
+# colordistance 1.0.0
 
-An R package with functions for quantifying the differences between colorful objects.
+An R package with functions for quantifying the differences between colorful objects. Loads and displays images, selectively masks specified background
+  colors, bins pixels by color using either data-dependent or automatically
+  generated color bins, quantitatively measures color similarity among images
+  using one of several distance metrics for comparing pixel color clusters, and
+  clusters images by object color similarity. Originally written for use with
+  organism coloration (reef fish color diversity, butterfly mimicry, etc), but
+  easily applicable for any image set.
+
+April 19, 2018: Functions for combining data across a set of images (`combineClusters` and `combineList`) added. Useful for pooling multiple images of the same individual, species, etc before analysis.
+
+June 26, 2018: Added option to perform analyses CIELAB color space, as well as warnings about perceptual non-uniformity of RGB space. RGB (with warning) is still the default in order to prompt users to read up on CIELAB before using it. See "Color Spaces" and "CIELab Analyses" vignettes.
 
 **Input**: Set(s) of JPEG or PNG images of colorful objects, optionally with backgrounds masked out.
 
@@ -16,9 +26,9 @@ An R package with functions for quantifying the differences between colorful obj
 
 ## Installation
 
-`colordistance` is still in development, and you can track it at <https://github.com/hiweller/colordistance>. 
+The development version of `colordistance` can be found at <https://github.com/hiweller/colordistance>.
 
-To install the current (largely untested) version of `colordistance` in R:
+To install the development version of `colordistance` in R:
 
 1. Install the [`devtools`](https://github.com/hadley/devtools) package (`install.packages("devtools")`).
 
@@ -27,11 +37,13 @@ To install the current (largely untested) version of `colordistance` in R:
     ```R
     # Without vignettes
     devtools::install_github("hiweller/colordistance")
-  
+
     # With vignettes
     devtools::install_github("hiweller/colordistance", build_vignettes=TRUE)
     ```
  3. You can access help documents by running `help(package="colordistance")` and clicking on the html files or, if you set `build_vignettes=TRUE` during install, run `vignette("colordistance-introduction")`.
+
+To install the stable release version on CRAN (https://CRAN.R-project.org/package=colordistance), just run `install.packages("colordistance")`.
 
 ## Documentation
 
@@ -47,7 +59,7 @@ All of the `colordistance` vignettes that (optionally) come with the package are
 
 To get started with `colordistance`, you'll need:
 
-1. A set of images of objects you want to compare, ideally as consistent with each other as possible in terms of lighting and angle, and with anything you want to ignore [masked out with a uniform background color](https://graphicdesign.stackexchange.com/questions/5446/making-the-background-of-an-image-transparent-in-gimp).
+1. A set of images of objects you want to compare, ideally as consistent with each other as possible in terms of lighting and angle, and with anything you want to ignore [masked out with a uniform background color](https://graphicdesign.stackexchange.com/questions/5446/making-the-background-of-an-image-transparent-in-gimp). Need something to get started? Try [these butterflyfish photos](https://github.com/hiweller/butterflyfish)! `colordistance` also comes with an example set of *Heliconius* butterfly pictures from [Meyer, 2006](http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.0040341), which you can access via `system.file("extdata", "Heliconius", package="colordistance")` in R.
 
 2. R version 3.3.2 or later.
 
@@ -63,4 +75,4 @@ You'll get a blue and yellow heatmap with a cluster dendrogram and labels taken 
 
 ## Questions?
 
-Email me!
+Email me: hannahiweller@gmail.com
