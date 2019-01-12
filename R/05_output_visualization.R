@@ -119,8 +119,9 @@ plotClusters <- function(cluster.list, color.space = "rgb",
                             size = ~cluster.list[[i]][, 4], 
                             color = ~cluster.list[[i]][, 4])
       pl <- plotly::add_markers(pl, color = I(colExp), 
-                                size = ~cluster.list[[i]][, 4], 
-                                sizes = c(10, 5000))
+            size = ~cluster.list[[i]][, 4], 
+            sizes = c(5000*min(cluster.list[[i]][,4]) / 
+                        max(cluster.list[[i]][,4]), 5000))
       pl <- plotly::layout(pl, scene = scene, 
                            title = names(cluster.list)[i])
 
@@ -142,8 +143,8 @@ plotClusters <- function(cluster.list, color.space = "rgb",
 #' Plots cluster sets from several different dataframes on a single plot for
 #' easy comparison.
 #'
-#' @param cluster.list A list of identically sized dataframes with 4 columns each
-#'   (R, G, B, Pct or H, S, V, Pct) as output by \code{extractClusters} or
+#' @param cluster.list A list of identically sized dataframes with 4 columns
+#'   each as output by \code{extractClusters}, \code{getLabHistList}, or
 #'   \code{getHistList}.
 #' @param p Numeric vector of indices for which elements to plot; otherwise all
 #'   of the cluster sets provided will be plotted together.
@@ -268,15 +269,14 @@ plotClustersMulti <- function(cluster.list, color.space = "rgb",
 #' \code{\link[stats]{hclust}}.
 #'
 #' @param clusterList_or_matrixObject Either a list of identically sized
-#'   dataframes with 4 columns each (R, G, B, Pct or H, S, V, Pct) as output by
+#'   dataframes with 4 columns each (3 color channels + Pct) as output by
 #'   \code{\link{extractClusters}} or \code{\link{getHistList}}, or a
 #'   symmetrical distance matrix as output by
 #'   \code{\link{getColorDistanceMatrix}}.
 #' @param main Title for heatmap plot.
 #' @param col Color scale for heatmap from low to high. Default is
-#'   \code{colorRampPalette(c("royalblue4", "ghostwhite",
-#'   "goldenrod2"))(n=299)}, where yellow is more dissimilar and blue is more
-#'   similar.
+#'   \code{colorRampPalette(c("royalblue4", "ghostwhite", "violetred2"))(299)},
+#'   where pink is more dissimilar and blue is more similar.
 #' @param margins Margins for column and row labels.
 #' @param ... Additional arguments passed on to \code{\link[gplots]{heatmap.2}}.
 #'
@@ -318,7 +318,8 @@ heatmapColorDistance <- function(clusterList_or_matrixObject,
   if (col[1] == "default") {
     col <- colorRampPalette(c("royalblue4", 
                               "ghostwhite", 
-                              "goldenrod2"))(n = 299)
+                              "violetred2"))(n=299)
+    
   }
 
   # Convert to "dist" object for hclust method and plot heatmap
@@ -341,15 +342,20 @@ heatmapColorDistance <- function(clusterList_or_matrixObject,
 #' bin.
 #'
 #' @param histogram A single dataframe or a list of dataframes as returned by
-#'   \code{\link{getImageHist}}, \code{\link{getHistList}}, or
+#'   \code{\link{getLabHist}}, \code{\link{getLabHistList}}, or
 #'   \code{\link{extractClusters}}. First three columns must be color
 #'   coordinates and fourth column must be cluster size.
 #' @param pausing Logical. Pause and wait for keystroke before plotting the next
 #'   histogram?
-#' @param hsv Logical. Should provided color coordinates be interpreted as HSV?
-#'   If \code{FALSE}, RGB is assumed.
+#' @param color.space The color space (\code{"rgb"}, \code{"hsv"}, or
+#'   \code{"lab"}) in which to plot cluster histogram.
+#' @param ref.white The reference white passed to
+#'   \code{\link{convertColorSpace}}; must be specified if using CIE
+#'   Lab space. See \link{convertColorSpace}.
 #' @param main Title for plot. If \code{"default"}, the name of the cluster
 #'   histogram is used.
+#' @param from  Display color space of image if clustering in CIE Lab space,
+#'   probably either "sRGB" or "Apple RGB", depending on your computer.
 #' @param ... Optional arguments passed to the \code{\link[graphics]{barplot}} function.
 #'
 #' @examples
@@ -361,12 +367,23 @@ heatmapColorDistance <- function(clusterList_or_matrixObject,
 #' colordistance::plotHist(color_df, main="Example plot")
 #' @export
 plotHist <- function(histogram, pausing = TRUE, 
-                     hsv = FALSE, main = "default", ...) {
+                     color.space = "rgb", ref.white, 
+                     from = "sRGB", main = "default", ...) {
+  
+  color.space <- tolower(color.space)
+  
   if (is.null(dim(histogram))) {
 
     for (i in 1:length(histogram)) {
       clusters <- histogram[[i]]
-      if (hsv) {
+      
+      if (color.space == "lab") {
+        clusters[, 1:3] <- suppressMessages(
+          convertColorSpace(histogram[, 1:3], 
+          from = "Lab", to = from, to.ref.white = ref.white))
+      }
+      
+      if (color.space == "hsv") {
         colExp <- apply(clusters, 1, function(x) hsv(h = x[1],
                                                      s = x[2],
                                                      v = x[3]))
@@ -389,7 +406,14 @@ plotHist <- function(histogram, pausing = TRUE,
 
     clusters <- histogram
 
-    if (hsv) {
+    if (color.space == "lab") {
+      clusters[, 1:3] <- suppressMessages(
+        convertColorSpace(clusters[ , 1:3], 
+        from = "Lab", to = from, 
+        to.ref.white = ref.white))
+    }
+    
+    if (color.space == "hsv") {
       colExp <- apply(clusters, 1, function(x) hsv(h = x[1],
                                                    s = x[2],
                                                    v = x[3]))
@@ -400,4 +424,110 @@ plotHist <- function(histogram, pausing = TRUE,
     }
     barplot(as.vector(clusters[, 4]), col = colExp, ...)
   }
+}
+
+#' Plot 3D clusters in a 2D plot
+#'
+#' Uses \code{\link[scatterplot3d]{scatterplot3d}} to plot clusters in color
+#' space.
+#'
+#' @param clusters A single dataframe or a list of dataframes as returned by
+#'   \code{\link{getLabHist}}, \code{\link{getLabHistList}}, or
+#'   \code{\link{extractClusters}}. First three columns must be color
+#'   coordinates and fourth column must be cluster size.
+#'
+#' @param color.space The color space (\code{"rgb"}, \code{"hsv"}, or
+#'   \code{"lab"}) in which to plot. If not specified, the function uses column
+#'   names to guess the color space.
+#' @param ref.white Standard reference white for converting lab coordinates to
+#'   RGB coordinates for coloring clusters. One of either "A", "B", "C", "E",
+#'   "D50", "D55", or "D65".
+#' @param xlim,ylim,zlim X, Y, and Z-axis limits. If not specified, the defaults
+#'   are 0-1 for all channels in RGB and HSV space, or 0-100 for L and -100-100
+#'   for a and b channels of CIE Lab space.
+#' @param main Title for the plot.
+#' @param scaling Scaling factor for size of clusters.
+#' @param opacity Transparency value for plotting; must be between 0 and 1.
+#' @param plus Amount to add to percent column for plotting; can help to make
+#'   very small (or 0) clusters visible.
+#' @param ... Additional parameters passed to
+#'   \code{\link[scatterplot3d]{scatterplot3d}}.
+#' 
+#' @examples 
+#' clusters <- data.frame(R = runif(20, min = 0, max = 1),
+#'                        G = runif(20, min = 0, max = 1),
+#'                        B = runif(20, min = 0, max = 1),
+#'                        Pct = runif(20, min = 0, max = 1))
+#' # plot in RGB space
+#' scatter3dclusters(clusters, scaling = 15, plus = 0.05)
+#' 
+#' # overrule determined color space and plot in HSV space
+#' scatter3dclusters(clusters, scaling = 15, plus = 0.05, color.space = "hsv")
+#' @seealso \code{\link{plotClusters}}, \code{\link{plotClustersMulti}}
+#' @export
+scatter3dclusters <- function(clusters, color.space, 
+                              ref.white = "D65",
+                              xlim = "default", ylim = "default", zlim = "default",
+                              main = "Color clusters", scaling = 10, 
+                              opacity = 0.9, plus = 0.01, ...) {
+  
+  # Store locations in a separate object
+  pix <- clusters[, 1:3]
+  
+  # If color.space is not specified, try to determine from column names
+  if (missing(color.space)) {
+    # generate channel names
+    channel.names <- paste0(tolower(colnames(clusters)), 
+                            collapse = "")
+    
+    # If channel.names matches any of the three color spaces, set color space
+    if (any(grepl(channel.names, "labpct|rgbpct|hsvpct"))) {
+      color.space <- paste0(tolower(colnames(clusters))[1:3], collapse = "")
+    } else {
+      stop("Could not determine color space from clusters. 
+           Specify 'color.space' as one of either 'lab', 'rgb',
+           or 'hsv'.")
+    }
+    }
+  
+  if (color.space == "lab") {
+    xlab <- "L"; ylab <- "a (green-red)"; zlab <- "b (blue-yellow)"
+    xb <- c(0, 100); yb <- c(-100, 100); zb <- c(-100, 100)
+    colExp <- grDevices::rgb(
+      suppressMessages(
+        convertColorSpace(from = "Lab", to = "sRGB", 
+                          color.coordinate.matrix = pix, 
+                          sample.size = "all", from.ref.white = ref.white)))
+  } else if (any(grepl(color.space, "rgb|hsv"))) {
+    if(color.space == "rgb") {
+      xlab <- "Red"; ylab <- "Green"; zlab <- "Blue"
+      colExp <- grDevices::rgb(pix)
+    } else {
+      xlab <- "Hue"; ylab <- "Saturation"; zlab <- "Value"
+      colExp <- apply(pix, 1, function(x) hsv(h = x[1],
+                                              s = x[2],
+                                              v = x[3]))
+    }
+    xb <- c(0, 1); yb <- c(0, 1); zb <- c(0, 1)
+  }
+  
+  if (xlim[1] == "default") {
+    xlim <- xb
+  }
+  
+  if (ylim[1] == "default") {
+    ylim <- yb
+  }
+  
+  if (zlim[1] == "default") {
+    zlim <- zb
+  }
+  
+  # Plot 3d scatterplot
+  scatterplot3d::scatterplot3d(pix, pch = 20, main = main,
+                 color = scales::alpha(colExp, opacity),
+                 xlab = xlab, ylab = ylab, zlab = zlab,
+                 xlim = xlim, ylim = ylim, zlim = zlim,
+                 cex.symbols = (scaling * (clusters$Pct + plus)), 
+                 ...)
 }

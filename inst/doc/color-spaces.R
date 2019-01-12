@@ -68,6 +68,10 @@ plotLab(lab.10000, title = "CIELab", ref.white = "D65", angle = -45,
         ylim = range(lab.10000[,2]), zlim=c(-100, 90))
 
 
+## ---- fig.align="center", fig.width=4, fig.height=4, echo=F--------------
+path <- system.file("extdata", "Heliconius/Heliconius_B/Heliconius_08.jpeg", package="colordistance")
+colordistance::plotImage(path)
+
 ## ---- fig.show='hold', fig.align="center", fig.width=4, fig.height=4, results=F----
 path <- system.file("extdata", "Heliconius/Heliconius_B/Heliconius_08.jpeg", package="colordistance")
 img <- colordistance::loadImage(path, lower = rep(0.8, 3), upper = rep(1, 3),

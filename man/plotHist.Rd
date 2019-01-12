@@ -4,19 +4,27 @@
 \alias{plotHist}
 \title{Color histogram of binned image}
 \usage{
-plotHist(histogram, pausing = TRUE, hsv = FALSE, main = "default", ...)
+plotHist(histogram, pausing = TRUE, color.space = "rgb", ref.white,
+  from = "sRGB", main = "default", ...)
 }
 \arguments{
 \item{histogram}{A single dataframe or a list of dataframes as returned by
-\code{\link{getImageHist}}, \code{\link{getHistList}}, or
+\code{\link{getLabHist}}, \code{\link{getLabHistList}}, or
 \code{\link{extractClusters}}. First three columns must be color
 coordinates and fourth column must be cluster size.}
 
 \item{pausing}{Logical. Pause and wait for keystroke before plotting the next
 histogram?}
 
-\item{hsv}{Logical. Should provided color coordinates be interpreted as HSV?
-If \code{FALSE}, RGB is assumed.}
+\item{color.space}{The color space (\code{"rgb"}, \code{"hsv"}, or
+\code{"lab"}) in which to plot cluster histogram.}
+
+\item{ref.white}{The reference white passed to
+\code{\link{convertColorSpace}}; must be specified if using CIE
+Lab space. See \link{convertColorSpace}.}
+
+\item{from}{Display color space of image if clustering in CIE Lab space,
+probably either "sRGB" or "Apple RGB", depending on your computer.}
 
 \item{main}{Title for plot. If \code{"default"}, the name of the cluster
 histogram is used.}

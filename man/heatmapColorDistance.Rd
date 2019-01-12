@@ -9,7 +9,7 @@ heatmapColorDistance(clusterList_or_matrixObject, main = NULL,
 }
 \arguments{
 \item{clusterList_or_matrixObject}{Either a list of identically sized
-dataframes with 4 columns each (R, G, B, Pct or H, S, V, Pct) as output by
+dataframes with 4 columns each (3 color channels + Pct) as output by
 \code{\link{extractClusters}} or \code{\link{getHistList}}, or a
 symmetrical distance matrix as output by
 \code{\link{getColorDistanceMatrix}}.}
@@ -17,9 +17,8 @@ symmetrical distance matrix as output by
 \item{main}{Title for heatmap plot.}
 
 \item{col}{Color scale for heatmap from low to high. Default is
-\code{colorRampPalette(c("royalblue4", "ghostwhite",
-"goldenrod2"))(n=299)}, where yellow is more dissimilar and blue is more
-similar.}
+\code{colorRampPalette(c("royalblue4", "ghostwhite", "violetred2"))(299)},
+where pink is more dissimilar and blue is more similar.}
 
 \item{margins}{Margins for column and row labels.}
 
