@@ -4,10 +4,23 @@
 \alias{getLabHist}
 \title{Generate a 3D histogram based on CIE Lab color coordinates in an image}
 \usage{
-getLabHist(image, bins = 3, sample.size = 10000, ref.white,
-  from = "sRGB", bin.avg = TRUE, as.vec = FALSE, plotting = TRUE,
-  lower = c(0, 0.55, 0), upper = c(0.24, 1, 0.24), title = "path",
-  a.bounds = c(-128, 127), b.bounds = c(-128, 127), ...)
+getLabHist(
+  image,
+  bins = 3,
+  sample.size = 10000,
+  ref.white,
+  from = "sRGB",
+  bin.avg = TRUE,
+  alpha.channel = TRUE,
+  as.vec = FALSE,
+  plotting = TRUE,
+  lower = c(0, 0.55, 0),
+  upper = c(0.24, 1, 0.24),
+  title = "path",
+  a.bounds = c(-128, 127),
+  b.bounds = c(-128, 127),
+  ...
+)
 }
 \arguments{
 \item{image}{Path to a valid image (PNG or JPG) or a \code{\link{loadImage}}
@@ -33,6 +46,10 @@ RGB", depending on your computer.}
 the pixels in that bin (bin.avg=\code{TRUE}) or the center of the bin
 (\code{FALSE})? If a bin is empty, the center of the bin is returned as the
 cluster color regardless.}
+
+\item{alpha.channel}{Logical. If available, should alpha channel transparency be
+used to mask background? See \code{\link{removeBackground}} for more
+details.}
 
 \item{as.vec}{Logical. Should the bin sizes just be returned as a vector?
 Much faster if only using \code{\link{chisqDistance}} for comparison metric.}

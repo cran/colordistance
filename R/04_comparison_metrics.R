@@ -40,10 +40,10 @@ chisqDistance <- function(a, b) {
 #' @return Sum of Euclidean distances between each pair of points (rows) in the
 #'   provided dataframes.
 #' @examples
-#' cluster.list <- colordistance::getHistList(system.file("extdata",
+#' \dontrun{cluster.list <- colordistance::getHistList(system.file("extdata",
 #' "Heliconius/Heliconius_B", package="colordistance"), lower=rep(0.8, 3),
 #' upper=rep(1, 3))
-#' colordistance:::colorDistance(cluster.list[[1]], cluster.list[[2]])
+#' colordistance:::colorDistance(cluster.list[[1]], cluster.list[[2]])}
 colorDistance <- function(T1, T2) {
   return(sum(sapply(1:dim(T1)[1], 
                     function(x) stats::dist(rbind(T1[x, 1:3],
@@ -121,10 +121,10 @@ weightedPairsDistance <- function(T1, T2, ordering=FALSE, size.weight=0.5,
     im1 <- spatstat::pp3(T1[, 1], T1[, 2], T1[, 3], 
                          spatstat::box3(c(0, 1)))
     im2 <- spatstat::pp3(T2[, 1], T2[, 2], T2[, 3], 
-                         spatstat::box3(c(0, 1)))
+                              spatstat::box3(c(0, 1)))
     col.dist <- spatstat::crossdist(im1, im2) / sqrt(3)
     size.dist <- spatstat::crossdist(spatstat::ppx(T1[, 4]),
-                spatstat::ppx(T2[, 4])) / t(sapply(c(1:dim(T1)[1]),
+                  spatstat::ppx(T2[, 4])) / t(sapply(c(1:dim(T1)[1]),
                                     function(x) T1[x, 4] + T2[, 4]))
     size.dist[is.nan(size.dist)] <- 0
 

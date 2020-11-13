@@ -1,9 +1,9 @@
-## ---- echo=F-------------------------------------------------------------
+## ---- echo=F------------------------------------------------------------------
 knitr::opts_chunk$set(
   fig.align="center"
 )
 
-## ----setup, include = FALSE----------------------------------------------
+## ----setup, include = FALSE---------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -68,7 +68,7 @@ plotLab(lab.10000, title = "CIELab", ref.white = "D65", angle = -45,
         ylim = range(lab.10000[,2]), zlim=c(-100, 90))
 
 
-## ---- fig.align="center", fig.width=4, fig.height=4, echo=F--------------
+## ---- fig.align="center", fig.width=4, fig.height=4, echo=F-------------------
 path <- system.file("extdata", "Heliconius/Heliconius_B/Heliconius_08.jpeg", package="colordistance")
 colordistance::plotImage(path)
 

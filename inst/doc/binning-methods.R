@@ -1,9 +1,9 @@
-## ---- echo=F-------------------------------------------------------------
+## ---- echo=F------------------------------------------------------------------
 knitr::opts_chunk$set(
   fig.align="center"
 )
 
-## ---- out.width="400px", echo=FALSE--------------------------------------
+## ---- out.width="400px", echo=FALSE-------------------------------------------
 knitr::include_graphics(system.file("extdata", "Heliconius/Heliconius_B/Heliconius_08.jpeg", package = "colordistance"))
 
 ## ---- fig.width=5, fig.height=4, fig.cap="(See the introduction for more information on the `plotPixels()` function.)"----
@@ -13,9 +13,13 @@ Heliconius_08 <- system.file("extdata", "Heliconius/Heliconius_B/Heliconius_08.j
 colordistance::plotPixels(Heliconius_08, lower = rep(0.8, 3), upper = rep(1, 3))
 
 ## ---- fig.cap="(For more information in `getImageHist()`, see the 'Histogram method' section.)"----
-binnedButterfly <- colordistance::getImageHist(Heliconius_08, bins = 2, lower = rep(0.8, 3), upper = rep(1, 3), plotting = TRUE)
+binnedButterfly <- colordistance::getImageHist(Heliconius_08, 
+                                               bins = 2, 
+                                               lower = rep(0.8, 3),
+                                               upper = rep(1, 3),
+                                               plotting = TRUE)
 
-## ---- fig.width=7, fig.height=6------------------------------------------
+## ---- fig.width=7, fig.height=6-----------------------------------------------
 par(mfrow=c(2,2))
 
 # Generate histogram using all the default settings (3 bins per channel, get average pixel color in each bin, use RGB instead of HSV)
@@ -34,26 +38,26 @@ unevenBins <- colordistance::getImageHist(Heliconius_08, lower = lower, upper = 
 # HSV instead of RGB
 hsvBins <- colordistance::getImageHist(Heliconius_08, lower = lower, upper = upper, hsv = TRUE, title = "HSV, not RGB")
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 defaultHist[1:10, ]
 
-## ---- results=F----------------------------------------------------------
+## ---- results=F---------------------------------------------------------------
 images <- dir(system.file("extdata", "Heliconius/", package = "colordistance"), full.names = TRUE)
 histList <- colordistance::getHistList(images, bins = 2, plotting = FALSE)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 # Output of getHistList() is (you guessed it) a list of dataframes as returned by getImageHist()
 histList[[1]]
 
 # and list elements are named for the image they came from
 names(histList)
 
-## ---- fig.width=4, fig.height=5------------------------------------------
+## ---- fig.width=4, fig.height=5-----------------------------------------------
 lower <- rep(0.8, 3)
 upper <- rep(1, 3)
 kmeans01 <- colordistance::getKMeanColors(Heliconius_08, lower = lower, upper = upper, n = 3)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 # Using default sample size
 system.time(colordistance::getKMeanColors(Heliconius_08, lower = lower, upper = upper, n = 3, plotting = FALSE))
 
@@ -63,22 +67,22 @@ system.time(colordistance::getKMeanColors(Heliconius_08, lower = lower, upper = 
 # Using all pixels instead of sample takes 5x longer - and this is a very low-res image!
 system.time(colordistance::getKMeanColors(Heliconius_08, lower = lower, upper = upper, n = 3, plotting = FALSE, sample.size = FALSE))
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 kmeansDF <- colordistance::extractClusters(kmeans01)
 print(kmeansDF)
 
-## ---- results=F----------------------------------------------------------
+## ---- results=F---------------------------------------------------------------
 # In order to see the clusters for each image, set plotting to TRUE and optionally pausing to TRUE as well
 kmeans02 <- colordistance::getKMeansList(images, bins = 3, lower = lower, upper = upper, plotting = F)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 kmeansClusters <- colordistance::extractClusters(kmeans02, ordering = T)
 head(kmeansClusters, 3)
 
-## ---- fig.width=4, fig.height=5------------------------------------------
+## ---- fig.width=4, fig.height=5-----------------------------------------------
 colordistance::getKMeanColors(Heliconius_08, lower = lower, upper = upper, return.clust = FALSE)
 
-## ---- fig.width=6, fig.height=3------------------------------------------
+## ---- fig.width=6, fig.height=3-----------------------------------------------
 par(mfrow=c(1, 3))
 # Get and plot histogram for a single image
 hist01 <- colordistance::getImageHist(Heliconius_08, bins = 2, plotting = TRUE, title = "RGB, 2 bins per channel", lower = lower, upper = upper)
@@ -89,11 +93,11 @@ hist02 <- colordistance::getImageHist(Heliconius_08, bins = 2, plotting = TRUE, 
 # Use different number of bins for each channel; use HSV instead of RGB
 hist03 <- colordistance::getImageHist(Heliconius_08, bins=c(8, 1, 2), plotting=TRUE, hsv=TRUE, title="HSV, 8 hue, 1 sat, 2 val", lower=lower, upper=upper)
 
-## ---- results=F, eval=F--------------------------------------------------
+## ---- results=F, eval=F-------------------------------------------------------
 #  # Get histograms for a set of images
 #  histMulti <- colordistance::getHistList(images, bins=2, plotting=FALSE, lower=lower, upper=upper)
 
-## ---- fig.width=4, fig.height=5, eval=F----------------------------------
+## ---- fig.width=4, fig.height=5, eval=F---------------------------------------
 #  lower <- rep(0.8, 3)
 #  upper <- rep(1, 3)
 #  
@@ -108,12 +112,12 @@ hist03 <- colordistance::getImageHist(Heliconius_08, bins=c(8, 1, 2), plotting=T
 #  # Don't return clusters as a dataframe
 #  colordistance::getKMeanColors(Heliconius_08, n=15, plotting=FALSE, return.clustlust=FALSE, lower=lower, upper=upper)
 
-## ---- results=F, eval=F--------------------------------------------------
+## ---- results=F, eval=F-------------------------------------------------------
 #  # For whole dataset
 #  kmeans03 <- colordistance::getKMeansList(images, n=3, plotting=FALSE, lower=lower, upper=upper)
 #  kmeansList <- colordistance::extractClusters(kmeans03)
 
-## ---- results=F, eval=F--------------------------------------------------
+## ---- results=F, eval=F-------------------------------------------------------
 #  # If we use the same number of clusters for both the histogram and k-means methods, how different do the clusters look?
 #  # Not run in this vignette, but produces 3D, interactive plots!
 #  histExample <- colordistance::getHistList(images, lower = lower, upper = upper)

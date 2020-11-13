@@ -8,32 +8,32 @@ knitr::include_graphics("Heliconius_08_edit.jpg")
 Heliconius_08 <- system.file("extdata", "Heliconius/Heliconius_B/Heliconius_08.jpeg", package="colordistance")
 colordistance::plotPixels(Heliconius_08, lower=NULL, upper=NULL)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 lower <- c(0.99, 0.99, 0.99)
 upper <- c(1, 1, 1)
 H8 <- colordistance::loadImage(Heliconius_08, lower=lower, upper=upper)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 names(H8)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 dim(H8$original.rgb)
 dim(H8$filtered.rgb.2d)
 
-## ---- fig.width=5, fig.height=4, fig.align="center"----------------------
+## ---- fig.width=5, fig.height=4, fig.align="center"---------------------------
 colordistance::plotPixels(H8)
 
-## ---- fig.width=5, fig.height=4, fig.align="center"----------------------
+## ---- fig.width=5, fig.height=4, fig.align="center"---------------------------
 lower <- rep(0.8, 3)
 colordistance::plotPixels(Heliconius_08, lower=lower, upper=upper)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 lower <- rep(0.8, 3)
 upper <- rep(1, 3)
 H8 <- colordistance::loadImage(Heliconius_08, lower=lower, upper=upper)
 dim(H8$filtered.rgb.2d)
 
-## ---- fig.width=5, fig.height=4, fig.align="center", echo=F, fig.cap=""----
+## ---- fig.width=5, fig.height=4, fig.align="center", echo=F, fig.cap=""-------
 pix <- H8$filtered.rgb.2d[sample(nrow(H8$filtered.rgb.2d), 10000), ]
 colExp <- apply(pix, 1, function(x) rgb(x[1], x[2], x[3]))
 xlab <- "Red"; ylab <- "Green"; zlab <- "Blue"
@@ -60,36 +60,33 @@ segments(yz3$x, yz3$y, yz4$x, yz4$y, lty=lty)
 segments(xz1$x, xz1$y, xz2$x, xz2$y, lty=lty)
 segments(xz3$x, xz3$y, xz4$x, xz4$y, lty=lty)
 
-## ---- fig.width=4, fig.height=3, fig.align="center"----------------------
+## ---- fig.width=4, fig.height=3, fig.align="center"---------------------------
 # Using 2 bins per channel as in the above figure
 H8hist <- colordistance::getImageHist(Heliconius_08, bins=c(2, 2, 2), lower=lower, upper=upper)
 
-## ---- fig.align="center", results=F, fig.width=8, fig.height=5-----------
+## ---- fig.align="center", results=F, fig.width=8, fig.height=5----------------
 images <- dir(system.file("extdata", "Heliconius/", package="colordistance"), full.names=TRUE)
 histList <- colordistance::getHistList(images, lower=lower, upper=upper, bins=rep(2, 3), plotting=FALSE, pausing=FALSE)
 
-## ---- fig.align="center", fig.width=7, fig.height=4, echo=F, results=F----
+## ---- fig.align="center", fig.width=7, fig.height=4, echo=F, results=F--------
 par(mfrow=c(2,4))
 histList <- suppressMessages(colordistance::getHistList(images, lower=lower, upper=upper, bins=rep(2, 3), plotting=TRUE, pausing=FALSE))
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 names(histList)
 histList$Heliconius_01
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 CDM <- colordistance::getColorDistanceMatrix(histList, method="emd", plotting=FALSE)
 print(CDM)
 
 ## ---- fig.align="center", fig.width=7, fig.height=5, fig.cap="Blue cells indicate **higher** similarity (lower distance), while yellow cells indicate **lower** similarity (higher distance)."----
 colordistance::heatmapColorDistance(CDM)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  write.csv(CDM, file = "Heliconius_color_distance_matrix.csv")
 
-## ---- eval=FALSE---------------------------------------------------------
-#  colordistance::exportTree(CDM, file = "Heliconius_color_tree.newick", return.tree = F)
-
-## ---- fig.align="center", fig.width=8, fig.height=5, eval=FALSE----------
+## ---- fig.align="center", fig.width=8, fig.height=5, eval=FALSE---------------
 #  # Define upper and lower bounds for background pixels
 #  upper <- rep(1, 3)
 #  lower <- rep(0.8, 3)
@@ -106,7 +103,7 @@ colordistance::heatmapColorDistance(CDM)
 #  write.csv(CDM, file = "./Heliconius_color_distance_matrix.csv")
 #  
 
-## ---- fig.align="center", fig.width=7, fig.height=5, results=F-----------
+## ---- fig.align="center", fig.width=7, fig.height=5, results=F----------------
 # Default: histogram binning, EMD color distance metric, 3 bins per channel (27 total)
 # Note that we get slightly different clustering each time
 default <- colordistance::imageClusterPipeline(images, upper = upper, lower = lower)

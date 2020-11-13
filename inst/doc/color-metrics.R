@@ -1,9 +1,9 @@
-## ---- echo=F-------------------------------------------------------------
+## ---- echo=F------------------------------------------------------------------
 knitr::opts_chunk$set(
   fig.align="center"
 )
 
-## ---- fig.width=6, fig.height=5, results="hide"--------------------------
+## ---- fig.width=6, fig.height=5, results="hide"-------------------------------
 
 images <- dir(system.file("extdata", "Heliconius/", package="colordistance"), full.names=TRUE)
 

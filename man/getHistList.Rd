@@ -4,10 +4,21 @@
 \alias{getHistList}
 \title{Generate a list of cluster sets for multiple images}
 \usage{
-getHistList(images, bins = 3, bin.avg = TRUE, lower = c(0, 0.55, 0),
-  upper = c(0.24, 1, 0.24), norm.pix = FALSE, plotting = FALSE,
-  pausing = TRUE, hsv = FALSE, title = "path", img.type = FALSE,
-  bounds = c(0, 1))
+getHistList(
+  images,
+  bins = 3,
+  bin.avg = TRUE,
+  lower = c(0, 0.55, 0),
+  upper = c(0.24, 1, 0.24),
+  alpha.channel = TRUE,
+  norm.pix = FALSE,
+  plotting = FALSE,
+  pausing = TRUE,
+  hsv = FALSE,
+  title = "path",
+  img.type = FALSE,
+  bounds = c(0, 1)
+)
 }
 \arguments{
 \item{images}{Character vector of directories, image paths, or both.}
@@ -35,6 +46,10 @@ upper=c(0.1, 0.1, 0.1) \item White: lower=c(0.8, 0.8, 0.8); upper=c(1, 1,
 lower=c(0, 0, 0.55); upper=c(0.24, 0.24, 1) } If no background filtering is
 needed, set bounds to some non-numeric value (\code{NULL}, \code{FALSE},
 \code{"off"}, etc); any non-numeric value is interpreted as \code{NULL}.}
+
+\item{alpha.channel}{Logical. If available, should alpha channel transparency be
+used to mask background? See \code{\link{removeBackground}} for more
+details.}
 
 \item{norm.pix}{Logical. Should RGB or HSV cluster values be normalized using
 \code{\link{normalizeRGB}}?}

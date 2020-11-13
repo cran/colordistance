@@ -4,10 +4,22 @@
 \alias{getImageHist}
 \title{Generate a 3D histogram based on color distribution in an image}
 \usage{
-getImageHist(image, bins = 3, bin.avg = TRUE, defaultClusters = NULL,
-  lower = c(0, 0.55, 0), upper = c(0.24, 1, 0.24), as.vec = FALSE,
-  norm.pix = FALSE, plotting = TRUE, hsv = FALSE, title = "path",
-  bounds = c(0, 1), ...)
+getImageHist(
+  image,
+  bins = 3,
+  bin.avg = TRUE,
+  defaultClusters = NULL,
+  lower = c(0, 0.55, 0),
+  upper = c(0.24, 1, 0.24),
+  as.vec = FALSE,
+  alpha.channel = TRUE,
+  norm.pix = FALSE,
+  plotting = TRUE,
+  hsv = FALSE,
+  title = "path",
+  bounds = c(0, 1),
+  ...
+)
 }
 \arguments{
 \item{image}{Path to a valid image (PNG or JPG) or a \code{\link{loadImage}}
@@ -43,6 +55,10 @@ needed, set bounds to some non-numeric value (\code{NULL}, \code{FALSE},
 
 \item{as.vec}{Logical. Should the bin sizes just be returned as a vector?
 Much faster if only using \code{\link{chisqDistance}} for comparison metric.}
+
+\item{alpha.channel}{Logical. If available, should alpha channel transparency be
+used to mask background? See \code{\link{removeBackground}} for more
+details.}
 
 \item{norm.pix}{Logical. Should RGB or HSV cluster values be normalized using
 \code{\link{normalizeRGB}}?}

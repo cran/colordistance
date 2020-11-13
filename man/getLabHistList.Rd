@@ -4,11 +4,24 @@
 \alias{getLabHistList}
 \title{Generate a list of cluster sets in CIE Lab color space}
 \usage{
-getLabHistList(images, bins = 3, sample.size = 10000, ref.white,
-  from = "sRGB", bin.avg = TRUE, as.vec = FALSE, plotting = FALSE,
-  pausing = TRUE, lower = c(0, 0.55, 0), upper = c(0.24, 1, 0.24),
-  title = "path", a.bounds = c(-128, 127), b.bounds = c(-128, 127),
-  ...)
+getLabHistList(
+  images,
+  bins = 3,
+  sample.size = 10000,
+  ref.white,
+  from = "sRGB",
+  bin.avg = TRUE,
+  as.vec = FALSE,
+  plotting = FALSE,
+  pausing = TRUE,
+  lower = c(0, 0.55, 0),
+  upper = c(0.24, 1, 0.24),
+  alpha.channel = TRUE,
+  title = "path",
+  a.bounds = c(-128, 127),
+  b.bounds = c(-128, 127),
+  ...
+)
 }
 \arguments{
 \item{images}{Character vector of directories, image paths, or both.}
@@ -56,6 +69,10 @@ background filtering is needed, set bounds to some non-numeric value
 (\code{NULL}, \code{FALSE}, \code{"off"}, etc); any non-numeric value is
 interpreted as \code{NULL}.}
 
+\item{alpha.channel}{Logical. If available, should alpha channel transparency be
+used to mask background? See \code{\link{removeBackground}} for more
+details.}
+
 \item{title}{String for what the title the plot if plotting is on; defaults
 to the image name.}
 
@@ -89,14 +106,6 @@ Color conversions will be highly dependent on the reference white used, which
 is why no default is provided. Users should look into
 \href{https://en.wikipedia.org/wiki/Standard_illuminant}{standard
 illuminants} to choose an appropriate reference for a dataset.
-
-The conversion from RGB to a standardized color space (XYZ, Lab, or Luv) is
-approximate, non-linear, and relatively time-consuming. Converting a large
-number of pixels can be computationally expensive, so
-\code{convertColorSpace} will randomly sample a specified number of rows to
-reduce the time. The default sample size, 10,000 rows, takes about 1 second to
-convert from sRGB to Lab space on an early 2015 Macbook with 8 GB of RAM.
-Time scales about linearly with number of rows converted.
 
 Unlike RGB or HSV color spaces, the three channels of CIE Lab color space do
 not all range between 0 and 1; instead, L (luminance) is always between 0 and
